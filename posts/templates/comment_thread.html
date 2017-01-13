@@ -1,0 +1,22 @@
+{% extends 'base.html' %} {% load urlify %} {% load crispy_forms_tags %} {% block head %} {{ instance.title }} {% endblock%} {% block content %} {{ comment }}
+<div class="col-sm-6 col-sm-offset-3">
+    <blockquote>
+        <div>{{ comment.content }} | {{ comment.user }} on {{ comment.timestamp|timesince }} ago | {% if comment.children.count > 0 %} {{ comment.children.count }} comment(s) {% endif %} {% if request.user == comment.user %}
+            <a href="{{ comment.get_delete_url }}">Delete</a> {% endif %}</div>
+        <div>
+            {% for j in comment.children %}
+            <blockquote>
+                <div>{{ j.content }} | {{ j.user }} on {{ j.timestamp|timesince }} ago</div>
+                {% if request.user == j.user %}
+                <a href="{{ j.get_delete_url }}">Delete</a> {% endif %}
+            </blockquote>
+            {% endfor %}
+            <form action="." method="POST">
+                {% csrf_token %} {{ form|crispy }}
+                <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                <input type="submit" value="Reply" class="btn btn-default">
+            </form>
+        </div>
+    </blockquote>
+</div>
+{% endblock %}
