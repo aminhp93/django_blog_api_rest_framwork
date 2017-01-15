@@ -47,6 +47,10 @@ class Post(models.Model):
 		# return "/posts/{}".format(self.id)
 		return reverse('posts:detail', kwargs = {'slug': self.slug })
 
+	def get_api_url(self):
+		# return "/posts/{}".format(self.id)
+		return reverse('posts-api:detail', kwargs = {'slug': self.slug })
+
 	class Meta:
 		ordering = ['-id', '-timestamp', '-update']
 
