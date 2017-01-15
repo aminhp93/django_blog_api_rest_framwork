@@ -5,6 +5,8 @@ from rest_framework.filters import (
 	OrderingFilter,
 	)
 
+from rest_framework.mixins import DestroyModelMixin, UpdateModelMixin
+
 from rest_framework.generics import (
 	CreateAPIView,
 	ListAPIView, 
@@ -28,17 +30,29 @@ from comments.models import Comment
 
 from .serializers import (
 	CommentSerializer,
-	CommentChildSerializer,
-	CommentDetailSerializer
+	CommentDetailSerializer,
+	CommentEditSerializer,
+	create_comment_serializer
 	)
 
-# class PostCreateAPIView(CreateAPIView):
-# 	queryset = Post.objects.all()
-# 	serializer_class = PostCreateUpdateSerializer
-# 	permission_classes = [IsAuthenticated]
+class CommentCreateAPIView(CreateAPIView):
+	queryset = Comment.objects.all()
+	# serializer_class = CommentCreateUpdateSerializer
+	permission_classes = [IsAuthenticated]
 
-# 	def perform_create(self, serializer):
-# 		serializer.save(user=self.request.user)
+	# def perform_create(self, serializer):
+		# serializer.save(user=self.request.user)
+	def get_serializer_class(self):
+		model_type = self.request.GET.get("type")
+		slug = self.request.GET.get("slug")
+		parent_id = self.request.GET.get("parent_id", None)
+		return create_comment_serializer(
+			model_type="post",
+			slug=slug,
+			parent_id = parent_id,
+			user = self.request.user
+			)
+
 
 class CommentListAPIView(ListAPIView):
 	# queryset = Comment.objects.all()
@@ -64,6 +78,16 @@ class CommentDetailAPIView(RetrieveAPIView):
 	serializer_class = CommentDetailSerializer
 	# lookup_field = "pk"
 	# lookup_url_kwarg = "abc"
+
+class CommentEditAPIView(DestroyAPIView, UpdateAPIView, RetrieveAPIView):
+	queryset = Comment.objects.filter(id__gte=0)
+	serializer_class = CommentEditSerializer
+
+	def put(self, request, *args, **kwargs):
+		return self.update(request, *args, **kwargs)
+
+	def delete(self, request, *args, **kwargs):
+		return self.destroy(request, *args, **kwargs)
 
 # class PostUpdateAPIView(RetrieveUpdateAPIView):
 # 	queryset = Post.objects.all()
