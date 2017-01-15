@@ -10,18 +10,14 @@ from rest_framework.filters import (
 	OrderingFilter,
 	)
 
-from posts.api.pagination import PostLimitOffsetPagination, PostPageNumberPagination
-
 from rest_framework.permissions import (
 	AllowAny,
-	IsAuthenticated,
-	IsAdminUser,
-	IsAuthenticatedOrReadOnly,
+	# IsAuthenticated,
+	# IsAdminUser,
+	# IsAuthenticatedOrReadOnly,
 	)
 
 from posts.models import Post
-
-from posts.api.permissions import IsOwnerOrReadOnly
 
 from rest_framework.mixins import DestroyModelMixin, UpdateModelMixin
 
@@ -37,13 +33,6 @@ from rest_framework.generics import (
 from posts.api.pagination import PostLimitOffsetPagination, PostPageNumberPagination
 from posts.api.permissions import IsOwnerOrReadOnly
 
-from rest_framework.permissions import (
-	AllowAny,
-	IsAuthenticated,
-	IsAdminUser,
-	IsAuthenticatedOrReadOnly,
-	)
-
 from comments.models import Comment
 
 from .serializers import (
@@ -56,6 +45,7 @@ User = get_user_model()
 class UserCreateAPIView(CreateAPIView):
 	serializer_class = UserCreateSerializer
 	queryset = User.objects.all()
+	permission_classes = [AllowAny]
 
 class UserLoginAPIView(APIView):
 	permission_classes = [AllowAny]
@@ -70,10 +60,5 @@ class UserLoginAPIView(APIView):
 			return Response(new_data, status=HTTP_200_OK)
 
 		return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
-
-
-
-
-
-
+		
 

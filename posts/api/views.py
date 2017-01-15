@@ -20,7 +20,7 @@ from rest_framework.permissions import (
 	AllowAny,
 	IsAuthenticated,
 	IsAdminUser,
-	IsAuthenticatedOrReadOnly,
+	# IsAuthenticatedOrReadOnly,
 	)
 
 from posts.models import Post
@@ -48,6 +48,7 @@ class PostListAPIView(ListAPIView):
 	filter_backends = [SearchFilter, OrderingFilter]
 	search_fields = ["title", "content", "user__first_name"]
 	pagination_class = PostPageNumberPagination
+	permission_classes = [AllowAny]
 
 	def get_queryset(self, *args, **kwargs):
 		# queryset_list = super().get_queryset(*args, **kwargs)
@@ -68,13 +69,14 @@ class PostDetailAPIView(RetrieveAPIView):
 	queryset = Post.objects.all()
 	serializer_class = PostDetailSerializer
 	lookup_field = "slug"
+	permission_classes = [AllowAny]
 	# lookup_url_kwarg = "abc"
 
 class PostUpdateAPIView(RetrieveUpdateAPIView):
 	queryset = Post.objects.all()
 	serializer_class = PostCreateUpdateSerializer
 	lookup_field = "slug"
-	permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+	permission_classes = [IsOwnerOrReadOnly]
 
 	def perform_update(self, serializer):
 		serializer.save(user=self.request.user)
@@ -83,5 +85,5 @@ class PostDestroyAPIView(DestroyAPIView):
 	queryset = Post.objects.all()
 	serializer_class = PostDetailSerializer
 	lookup_field = "slug"
-	permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+	permission_classes = [IsOwnerOrReadOnly]
 
