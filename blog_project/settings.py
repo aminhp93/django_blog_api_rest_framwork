@@ -150,11 +150,27 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     )
 }
 
+"""
 
+curl -X POST -d "username=amin&password=Miamikki521" http://localhost:8000/api/auth/token/
+
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0ODQ1MDIxNDEsInVzZXJuYW1lIjoiYW1pbiIsInVzZXJfaWQiOjEsImVtYWlsIjoibWluaEBnbWFpbC5jb20ifQ.K5MPldXt-fpjgezZYeXxkQS-1cQ_oJnD8RZ5_dW3BZ4
+
+curl -H "Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0ODQ1MDIxNDEsInVzZXJuYW1lIjoiYW1pbiIsInVzZXJfaWQiOjEsImVtYWlsIjoibWluaEBnbWFpbC5jb20ifQ.K5MPldXt-fpjgezZYeXxkQS-1cQ_oJnD8RZ5_dW3BZ4" http://localhost:8000/api/comments/
+
+curl -X POST -H "Content-Type: application/json" -d '{"username":"admin","password":"password123"}' http://localhost:8000/api-token-auth/
+
+curl -X POST -H "Authorization: JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Im1pbmhAZ21haWwuY29tIiwidXNlcm5hbWUiOiJhbWluIiwidXNlcl9pZCI6MSwiZXhwIjoxNDg0NTAyOTA4fQ.wUlbB8XFbZdec55Bt4OD3BYBsY2PQoqo4kySpkcXg3A" -H "Content-Type: application/json" -d '{"content":"this is some content"}' http://localhost:8000/api/comments/create/?slug=test&type=posts
+
+curl http://localhost:8000/api/comments/
+
+
+"""
 
